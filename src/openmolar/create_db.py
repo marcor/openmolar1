@@ -29,20 +29,20 @@ correct user permissions.
 import logging
 import os
 
-import MySQLdb
+import mariadb as MySQLdb
 from openmolar.settings import localsettings
 
 LOGGER = logging.getLogger("openmolar")
 
-DROP_QUERY = "DROP DATABASE IF EXISTS %s"
-CREATE_QUERY = "CREATE DATABASE %s"
+DROP_QUERY = "DROP DATABASE IF EXISTS ?"
+CREATE_QUERY = "CREATE DATABASE ?"
 
 # note for production deployments, only grant
 # select,insert,update,delete privileges
-PRIVS_QUERY = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'%s' IDENTIFIED BY '%s'"
+PRIVS_QUERY = "GRANT ALL PRIVILEGES ON ?.* TO ?@? IDENTIFIED BY ?"
 
 CHECK_SUPERVISOR_QUERY = '''
-SELECT Create_priv, Drop_priv, Trigger_priv FROM user WHERE User=%s and Host=%s
+SELECT Create_priv, Drop_priv, Trigger_priv FROM user WHERE User=? and Host=?
 '''
 
 
@@ -122,13 +122,13 @@ def create_database(host_, port_, user_, pass_wd, db_name,
 
         cursor = db.cursor()
         LOGGER.info("deleting any existing openmolar_demo database....")
-        cursor.execute(DROP_QUERY % db_name)
+        cursor.execute(DROP_QUERY, (db_name,))
 
         LOGGER.info("creating database %s", db_name)
-        cursor.execute(CREATE_QUERY % db_name)
+        cursor.execute(CREATE_QUERY, (db_name,))
 
         LOGGER.info("setting privileges for '%s'", user_)
-        cursor.execute(PRIVS_QUERY % (db_name, user_, host_, pass_wd))
+        cursor.execute(PRIVS_QUERY, (db_name, user_, host_, pass_wd))
         cursor.close()
         db.commit()
         db.close()

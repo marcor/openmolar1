@@ -33,7 +33,7 @@ import time
 import subprocess
 from xml.dom import minidom
 
-import MySQLdb
+import mariadb as MySQLdb
 from PyQt5 import QtCore
 
 from openmolar.settings import localsettings
@@ -162,15 +162,14 @@ class Connection(object):
             "user": self.user,
             "passwd": self.password,
             "db": self.db_name,
-            "use_unicode": True,
-            "charset": "utf8"
+            "autocommit": True
         }
         if self.use_ssl:
             # - note, ssl_settings maps to a dictionary
             # - which can have up to 5 params.
             # - ca, cert, key, capath and cipher
             # - however, IIUC, just using ca will encrypt the data
-            kwargs["ssl_settings"] = {'ca': '/etc/mysql/ca-cert.pem'}
+            kwargs["ssl_ca"] = '/etc/mysql/ca-cert.pem'
         return kwargs
 
     @property
@@ -196,7 +195,6 @@ class Connection(object):
                         _("Initiating MySQL connection"), 0)
                 LOGGER.debug("connecting to %s", params.database_name)
                 params._connection = MySQLdb.connect(**params.kwargs)
-                params._connection.autocommit(True)
                 params.was_connected = True  # never returned to False
                 self.attempts = 0
                 params.signaller.message_signal.emit(

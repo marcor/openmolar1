@@ -28,7 +28,7 @@ import logging
 import os
 from xml.dom import minidom
 
-import MySQLdb
+import mariadb as MySQLdb
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
