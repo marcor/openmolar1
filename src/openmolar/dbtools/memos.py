@@ -101,10 +101,10 @@ def saveMemo(serialno, author, type, expire, message, open):
     values = (serialno, author, type, expire, message, open)
 
     cursor = db.cursor()
-    result = cursor.execute(INSERT_QUERY, values)
+    cursor.execute(INSERT_QUERY, values)
+    result = cursor.rowcount
     db.commit()
     cursor.close()
-
     return result
 
 

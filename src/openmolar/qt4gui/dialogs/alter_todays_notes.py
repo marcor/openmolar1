@@ -101,11 +101,11 @@ class AlterTodaysNotesDialog(BaseDialog):
             query = QUERY.replace("op2 =", "op2 is")
         db = connect.connect()
         cursor = db.cursor()
-        count = cursor.execute(query, (self.sno, op1, op2))
+        cursor.execute(query, (self.sno, op1, op2))
         rows = cursor.fetchall()
         cursor.close()
 
-        if self.patient_loaded and not count:
+        if self.patient_loaded and not rows:
             mb = QtWidgets.QMessageBox(self)
             mb.setWindowTitle(_("message"))
             mb.setText(_("No notes found for today!"))

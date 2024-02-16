@@ -309,7 +309,8 @@ def toNotes(serialno, newnotes):
     if values:
         db = connect()
         cursor = db.cursor()
-        rows = cursor.executemany(INSERT_NOTE_QUERY, values)
+        cursor.executemany(INSERT_NOTE_QUERY, values)
+        rows = cursor.rowcount
         cursor.close()
         db.commit()
 
